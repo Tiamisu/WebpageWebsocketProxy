@@ -1,0 +1,38 @@
+<script type="text/javascript">
+function connect(){
+var Server ="ws://example.com/ray"
+var Client ="ws://example.com:4443"
+var wsServer = new WebSocket(Server);
+var wsClient = new WebSocket(Client);
+
+wsClient.onmessage = function (event){
+  console.log("received client");
+wsServer.send(event.data);
+};
+
+wsServer.onmessage = function (event){
+    console.log("received Server");
+wsClient.send(event.data);
+};
+
+wsClient.onerror = function (err){
+wsClient.close();
+console.error('wsClient closed', err.message);
+};
+
+wsServer.onerror = function (err){
+wsServer.close();
+console.error('wsServer closed', err.message);
+};
+
+wsClient.onclose = function (){
+setTimeout(connect(), 2000);
+};
+
+wsServer.onclose = function (){
+setTimeout(connect(), 2000);
+
+};
+}
+connect();
+</script>
